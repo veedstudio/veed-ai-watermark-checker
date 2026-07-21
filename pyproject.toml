@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "veed-videoseal"
+version = "0.5.0"
+description = "VEED AI-generated-content video watermark: embed and verify a durable, invisible marker via VideoSeal."
+readme = "README.md"
+license = { text = "MIT" }
+# 3.12 is the real floor: the `videoseal` extra pins scipy==1.18.0 and numpy, both of which
+# declare Requires-Python >=3.12, so the extra cannot resolve on 3.10/3.11.
+requires-python = ">=3.12"
+dependencies = [
+    "numpy",
+    "torch>=2.3.1",
+    # NOTE: `videoseal` itself is a PEER dependency, intentionally NOT listed here: it pulls
+    # `decord`, which has no macOS arm64 wheel (and unreliable py3.12 wheels) and is unused for
+    # embed/detect on tensors (we do video I/O via ffmpeg). It must be installed with
+    # `--no-deps` — see scripts/install_videoseal.sh. Its real runtime deps are the `videoseal`
+    # extra below, so they live in metadata rather than being hand-listed in the shell script.
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+# VideoSeal's real runtime dependencies. We install videoseal with `--no-deps` (see above), so
+# we must supply these ourselves; `pip install .[videoseal]` pulls them. Pins match the set
+# validated against the VideoSeal checkpoint; the unpinned entries are deliberately left to the
+# resolver (they are broadly compatible and over-pinning them tends to cause conflicts).
+videoseal = [
+    "PyWavelets==1.9.0",
+    "av==17.1.0",
+    "calflops==0.3.2",
+    "lpips==0.1.4",
+    "omegaconf==2.3.1",
+    "pandas==3.0.3",
+    "pycocotools==2.0.11",
+    "pytorch_msssim==1.0.0",
+    "scipy==1.18.0",
+    "tensorboard==2.20.0",
+    "huggingface_hub==1.20.1",
+    "requests==2.34.2",
+    "timm==0.9.16",
+    "setuptools",
+    "einops",
+    "opencv-python",
+    "safetensors",
+    "scikit-image",
+    "tqdm",
+    "transformers",
+]
+
+[project.scripts]
+veed-videoseal = "veed_videoseal.cli:main"
+# Back-compat alias for the original verify-only console script.
+veed-videoseal-verify = "veed_videoseal.cli:verify_main"
+
+[tool.setuptools.packages.find]
+include = ["veed_videoseal*"]
+
+[tool.setuptools.package-data]
+# The vendored VideoSeal attenuation config is loaded at runtime (model.py); it MUST ship
+# in the wheel or a non-editable install raises FileNotFoundError on first load_model().
+veed_videoseal = ["assets/*.yaml"]
+
+[tool.pytest.ini_options]
+markers = [
+    "gpu: round-trip tests that need a torch accelerator (CUDA/MPS) and model weights",
+]
