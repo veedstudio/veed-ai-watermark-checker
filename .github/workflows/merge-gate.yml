@@ -1,0 +1,41 @@
+# Merge gate for the PUBLIC mirror repo (veed-ai-watermark-checker).
+#
+# This file is NOT a workflow in this repository — GitHub only runs files under .github/workflows/,
+# so it never executes here. copy.bara.sky moves it to .github/workflows/merge-gate.yml on the way
+# out (see the core.move in that file). Keeping it out of .github/workflows/ here is deliberate: it
+# stops this gate from adding a redundant check to internal PRs.
+#
+# Why it exists: org policy requires the default branch to be gated by a required status check. The
+# internal Merge Gatekeeper cannot run in a public repo (it needs a private runner label and a
+# private org action repo), and the public repo intentionally ships no test suite, so there is
+# nothing to aggregate. This gate is therefore deliberately trivial. Its value is structural, not
+# analytical: it makes a status check reportable so the branch ruleset has something to require,
+# which in turn forces every change — including each Copybara mirror — to arrive as a reviewable PR
+# rather than a direct push.
+#
+# The job id below IS the status check context. It must stay in sync with required_status_checks on
+# the veed-ai-watermark-checker module in gcp-infra-modules-terraform. Renaming the job without
+# updating terraform blocks the default branch on a check that can never report.
+#
+# Deliberately NOT named "merge-gatekeeper": that exact string makes the shared repo module create
+# and overwrite its own .github/workflows/merge-gatekeeper.yml (which is the internal, unusable
+# one), clobbering this file.
+name: Merge Gate
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: merge-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  merge-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Gate
+        run: echo "Merge gate satisfied — change arrived as a reviewed pull request."
