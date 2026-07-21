@@ -1,0 +1,48 @@
+Third-party licenses
+====================
+
+This project bundles, depends on, or downloads the third-party software listed
+below. Each component remains under its own license and copyright.
+
+--------------------------------------------------------------------------------
+Meta VideoSeal
+https://github.com/facebookresearch/videoseal
+
+How this project uses it:
+
+  * Vendored source: veed_videoseal/assets/attenuation.yaml is copied verbatim
+    from VideoSeal's configs/attenuation.yaml. This is the only VideoSeal source
+    redistributed in this repository.
+
+  * Runtime dependency: the `videoseal` package itself is NOT redistributed
+    here. It is installed separately from PyPI (see scripts/install_videoseal.sh)
+    and remains under its own license.
+
+  * Model weights: the VideoSeal checkpoint (y_256b_img.pth) is NOT
+    redistributed here. It is downloaded at runtime from dl.fbaipublicfiles.com
+    on first use. VideoSeal's README states: "The model is licensed under an MIT
+    license." We reproduce that statement for information only; the upstream
+    repository is the authoritative source for the terms that apply to the
+    weights, and users who need certainty about them should confirm upstream.
+
+MIT License
+
+Copyright (c) Meta Platforms, Inc. and affiliates.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

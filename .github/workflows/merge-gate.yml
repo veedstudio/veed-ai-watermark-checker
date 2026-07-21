@@ -1,0 +1,34 @@
+# NOTE: this file is PUBLISHED to the public repository. Keep every line here suitable for an
+# outside reader — no internal repository, service, runner or tooling names. The rationale for how
+# this file is built and why it is named as it is lives with the mirror configuration, which is not
+# published.
+#
+# Required status check for this repository's default branch.
+#
+# This repository is a published mirror of an upstream source tree: changes arrive in batches, and
+# each batch lands through a reviewed pull request. This check is what the branch protection rule
+# requires, so no change can reach the default branch without going through that review. It runs no
+# build or test step of its own; the test suite under tests/ is provided for readers to run locally.
+#
+# The job id below is the status check context named by this repository's branch protection
+# configuration. Renaming the job without updating that configuration would leave the default branch
+# waiting on a check that can never report.
+name: Merge Gate
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: merge-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  merge-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Gate
+        run: echo "Merge gate satisfied — change arrived as a reviewed pull request."

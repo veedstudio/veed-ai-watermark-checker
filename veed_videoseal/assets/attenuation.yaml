@@ -1,0 +1,25 @@
+# Vendored verbatim from Meta VideoSeal (configs/attenuation.yaml).
+# https://github.com/facebookresearch/videoseal
+#
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+# Licensed under the MIT License. Full text: THIRD_PARTY_LICENSES in this repository.
+#
+# Why vendored: VideoSeal's model card references configs/attenuation.yaml by a cwd-relative
+# path and the file is not shipped in the videoseal wheel, so we keep a copy and point the card
+# at it by absolute path (see veed_videoseal/model.py).
+
+jnd_1_1:
+  in_channels: 1
+  out_channels: 1
+
+jnd_3_3:
+  in_channels: 3
+  out_channels: 3
+
+jnd_1_3:
+  in_channels: 1
+  out_channels: 3
+
+jnd_3_1:
+  in_channels: 3
+  out_channels: 1
